@@ -76,15 +76,24 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     
   if (error || !data) return null;
   
-  // Cast the data to UserProfile and ensure all required fields are present
-  return {
+  // Mock the required fields that might not exist in the profiles table
+  const mockProfile: UserProfile = {
     id: data.id,
     email: data.email || '',
     role: (data.role as UserRole) || 'student',
     display_name: data.display_name || null,
     avatar_url: data.avatar_url || null,
-    ...data
-  } as UserProfile;
+    first_name: data.first_name || null,
+    last_name: data.last_name || null,
+    date_of_birth: data.date_of_birth || null,
+    gender: data.gender || null,
+    language: data.language || null,
+    phone: data.phone || null,
+    created_at: data.created_at || null,
+    updated_at: data.updated_at || null
+  };
+  
+  return mockProfile;
 }
 
 export async function updateProfile(userId: string, updates: Partial<UserProfile>) {
