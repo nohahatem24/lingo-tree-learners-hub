@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 
@@ -76,11 +75,11 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     
   if (error || !data) return null;
   
-  // Mock the required fields that might not exist in the profiles table
-  const mockProfile: UserProfile = {
-    id: data.id,
+  // Create a valid UserProfile object with default values for potentially missing fields
+  const userProfile: UserProfile = {
+    id: data.id || userId,
     email: data.email || '',
-    role: (data.role as UserRole) || 'student',
+    role: ((data.role as UserRole) || 'student') as UserRole,
     display_name: data.display_name || null,
     avatar_url: data.avatar_url || null,
     first_name: data.first_name || null,
@@ -93,7 +92,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     updated_at: data.updated_at || null
   };
   
-  return mockProfile;
+  return userProfile;
 }
 
 export async function updateProfile(userId: string, updates: Partial<UserProfile>) {
