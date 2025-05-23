@@ -4,28 +4,88 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, BookOpen, Users, Award } from "lucide-react";
 import UserTypeSelector from "@/components/UserTypeSelector";
+import { useAuth } from "@/context/AuthContext";
 import StudentDashboard from "@/components/StudentDashboard";
 import TeacherDashboard from "@/components/TeacherDashboard";
+import { signIn, signUp, signOut, UserRole } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Form } from "@/components/ui/form";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const { toast } = useToast();
+  const { user, profile, loading } = useAuth();
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
+  const handleLogin = async () => {
+    try {
+      await signIn(email, password);
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setSelectedUserType(null);
+  const handleRegister = async () => {
+    try {
+      await signUp(email, password, selectedUserType as UserRole, displayName);
+      toast({
+        title: "Registration successful",
+        description: "Please check your email to confirm your account.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
-  if (isLoggedIn && selectedUserType === "student") {
-    return <StudentDashboard onLogout={handleLogout} />;
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      setSelectedUserType(null);
+    } catch (error: any) {
+      toast({
+        title: "Logout failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-blue-50 to-purple-100">
+        <div className="text-center">
+          <div className="text-6xl animate-bounce mb-4">🌳</div>
+          <p className="text-xl text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (isLoggedIn && selectedUserType === "teacher") {
-    return <TeacherDashboard onLogout={handleLogout} />;
+  if (user && profile) {
+    if (profile.role === "student") {
+      return <StudentDashboard onLogout={handleLogout} />;
+    }
+    if (profile.role === "teacher") {
+      return <TeacherDashboard onLogout={handleLogout} />;
+    }
   }
 
   if (selectedUserType) {
@@ -45,28 +105,67 @@ const Index = () => {
                 <div className="text-center mb-6">
                   <div className="text-6xl mb-4">🌳</div>
                   <h2 className="text-2xl font-bold text-green-700 mb-2">
-                    {selectedUserType === "student" ? "Student Login" : "Teacher Login"}
+                    {isRegistering ? `Register as ${selectedUserType}` : `${selectedUserType} Login`}
                   </h2>
-                  <p className="text-gray-600">Welcome to ABC Lingo Tree!</p>
+                  <p className="text-gray-600">Welcome to English Buds!</p>
                 </div>
                 
                 <div className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-full p-3 border-2 border-green-200 rounded-lg focus:border-green-500 outline-none"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full p-3 border-2 border-green-200 rounded-lg focus:border-green-500 outline-none"
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-3 border-2 border-green-200 rounded-lg focus:border-green-500 outline-none"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full p-3 border-2 border-green-200 rounded-lg focus:border-green-500 outline-none"
+                    />
+                  </div>
+                  
+                  {isRegistering && (
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">Display Name</Label>
+                      <Input
+                        id="displayName"
+                        type="text"
+                        placeholder="Your name"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        className="w-full p-3 border-2 border-green-200 rounded-lg focus:border-green-500 outline-none"
+                      />
+                    </div>
+                  )}
+                  
                   <Button 
-                    onClick={handleLogin}
+                    onClick={isRegistering ? handleRegister : handleLogin}
                     className="w-full bg-green-500 hover:bg-green-600 text-white py-3 text-lg font-semibold rounded-lg"
                   >
-                    Login to ABC Lingo Tree! 🌟
+                    {isRegistering ? "Create Account 🌟" : "Login to English Buds! 🌟"}
                   </Button>
+                  
+                  <div className="text-center pt-3">
+                    <button 
+                      onClick={() => setIsRegistering(!isRegistering)}
+                      className="text-blue-500 hover:text-blue-700 font-medium"
+                    >
+                      {isRegistering 
+                        ? "Already have an account? Login" 
+                        : "Need an account? Register"}
+                    </button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -83,18 +182,31 @@ const Index = () => {
         <div className="animate-bounce mb-8">
           <div className="text-8xl mb-4">🌳</div>
           <h1 className="text-6xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-4">
-            ABC Lingo Tree
+            English Buds
           </h1>
           <p className="text-2xl text-gray-700 font-semibold">
+            With Miss Gannah & Miss Suzan
+          </p>
+          <p className="text-xl text-gray-600 mt-2">
             Learning English is now fun and easy! 🌟
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto mb-12">
           <p className="text-lg text-gray-600 mb-8">
-            Join thousands of students and teachers in our magical learning forest! 
+            Join thousands of students in our magical learning forest! 
             Interactive lessons, fun games, and automatic grading make learning English an adventure!
           </p>
+        </div>
+
+        <div className="flex justify-center gap-4 mb-12">
+          <Button 
+            as={Link}
+            to="/teachers"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Meet Our Teachers! 👩‍🏫
+          </Button>
         </div>
 
         <UserTypeSelector onSelect={setSelectedUserType} />
@@ -162,7 +274,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 text-center text-gray-600">
         <div className="text-4xl mb-4">🌳</div>
-        <p>&copy; 2024 ABC Lingo Tree. Making English learning magical! ✨</p>
+        <p>&copy; 2024 English Buds with Miss Gannah & Miss Suzan. Making English learning magical! ✨</p>
       </footer>
     </div>
   );
