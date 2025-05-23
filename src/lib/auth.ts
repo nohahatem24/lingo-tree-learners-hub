@@ -48,7 +48,7 @@ export async function signUp(email: string, password: string, role: UserRole, di
   if (data.user) {
     // Use raw SQL via rpc to bypass type issues
     // This will insert into the profiles table created in our migration
-    const { error: profileError } = await supabase.rpc('create_profile', {
+    const { error: profileError } = await supabase.rpc('create_profile' as any, {
       user_id: data.user.id,
       user_email: email,
       user_role: role,
@@ -74,7 +74,7 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   // Use a more generic fetch approach to bypass type issues
   const { data, error } = await supabase
-    .from('profiles')
+    .from('profiles' as any)
     .select('*')
     .eq('id', userId)
     .single();
@@ -105,7 +105,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
 export async function updateProfile(userId: string, updates: Partial<UserProfile>) {
   // Use a more generic fetch approach to bypass type issues
   const { error } = await supabase
-    .rpc('update_user_profile', {
+    .rpc('update_user_profile' as any, {
       user_id: userId,
       profile_updates: updates
     });
