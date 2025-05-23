@@ -200,13 +200,9 @@ const Index = () => {
         </div>
 
         <div className="flex justify-center gap-4 mb-12">
-          <Button 
-            as={Link}
-            to="/teachers"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-          >
+          <Link to="/teachers" className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
             Meet Our Teachers! 👩‍🏫
-          </Button>
+          </Link>
         </div>
 
         <UserTypeSelector onSelect={setSelectedUserType} />
