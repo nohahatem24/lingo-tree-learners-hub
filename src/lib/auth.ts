@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 
@@ -75,12 +76,13 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     
   if (error || !data) return null;
   
-  // Create a valid UserProfile object with default values for potentially missing fields
+  // Create a valid UserProfile object with default values
+  // This safely handles potential missing properties in the data object
   const userProfile: UserProfile = {
-    id: data.id || userId,
-    email: data.email || '',
-    role: ((data.role as UserRole) || 'student') as UserRole,
-    display_name: data.display_name || null,
+    id: userId,
+    email: (data as any).email || '',
+    role: ((data as any).role as UserRole || 'student') as UserRole,
+    display_name: (data as any).display_name || null,
     avatar_url: data.avatar_url || null,
     first_name: data.first_name || null,
     last_name: data.last_name || null,
