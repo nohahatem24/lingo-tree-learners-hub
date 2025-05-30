@@ -1,170 +1,306 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/context/AuthContext";
-import { Course } from "@/lib/courses";
-import CourseCard from "@/components/CourseCard";
-import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  BookOpen, 
+  Star, 
+  Award, 
+  MessageCircle, 
+  Play, 
+  Clock, 
+  TrendingUp,
+  LogOut,
+  User
+} from "lucide-react";
+import { useAuth } from '@/context/AuthContext';
+import { signOut } from '@/lib/auth';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
-interface StudentDashboardProps {
-  onLogout?: () => void;
-}
-
-const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
+const StudentDashboard = () => {
   const { profile } = useAuth();
-  const [purchasedCourses, setPurchasedCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'courses' | 'progress' | 'messages'>('courses');
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('courses');
 
-  useEffect(() => {
-    async function fetchPurchasedCourses() {
-      if (!profile?.id) return;
-      
-      try {
-        console.log("Fetching purchased courses for user:", profile.id);
-        
-        // Note: Since 'purchases' and 'courses' tables don't exist in the current Supabase schema,
-        // we're setting up a placeholder. In a real implementation, you would query your actual tables.
-        
-        // Mock data for demonstration purposes
-        const mockCourses: Course[] = [
-          {
-            id: "1",
-            title: "English Grammar Basics",
-            description: "Learn the fundamentals of English grammar",
-            price: 29.99,
-            teacher_id: "teacher-1",
-            thumbnail_url: null,
-            is_bundle: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: "2",
-            title: "Vocabulary Builder",
-            description: "Expand your English vocabulary",
-            price: 19.99,
-            teacher_id: "teacher-2",
-            thumbnail_url: null,
-            is_bundle: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ];
-        
-        setPurchasedCourses(mockCourses);
-      } catch (error) {
-        console.error('Error fetching purchased courses:', error);
-      } finally {
-        setLoading(false);
-      }
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/');
+      toast({
+        title: "See you soon! 👋",
+        description: "You've been logged out successfully.",
+      });
+    } catch (error) {
+      console.error('Sign out error:', error);
     }
-    
-    fetchPurchasedCourses();
-  }, [profile?.id]);
+  };
 
-  const handleCourseView = (courseId: string) => {
-    // Navigate to course page
-    console.log(`Navigating to course ${courseId}`);
+  // Mock data for demonstration
+  const enrolledCourses = [
+    {
+      id: '1',
+      title: 'Fun Phonics Adventure 🎵',
+      teacher: 'Miss Gannah',
+      progress: 75,
+      thumbnail: '🎵',
+      nextLesson: 'Lesson 9: Silent Letters',
+      totalLessons: 12,
+      completedLessons: 9
+    },
+    {
+      id: '2',
+      title: 'ABC Wonderland 🌈',
+      teacher: 'Miss Gannah',
+      progress: 100,
+      thumbnail: '🌈',
+      nextLesson: 'Course Complete!',
+      totalLessons: 8,
+      completedLessons: 8
+    }
+  ];
+
+  const recentBadges = [
+    { name: 'First Lesson', icon: '🌟', date: '2 days ago' },
+    { name: 'Quick Learner', icon: '⚡', date: '1 week ago' },
+    { name: 'Perfect Score', icon: '🎯', date: '3 days ago' }
+  ];
+
+  const weeklyStats = {
+    lessonsCompleted: 12,
+    timeSpent: 180, // minutes
+    starsEarned: 45,
+    currentStreak: 5
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-blue-50 to-purple-100 py-8">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-green-700">
-              Welcome, {profile?.display_name || 'Student'}! 🌟
-            </h1>
-            <p className="text-blue-600">Your learning adventure continues!</p>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-pink-50 to-blue-100">
+      {/* Header */}
+      <header className="bg-white shadow-lg border-b-4 border-rainbow">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <div className="text-3xl">🌟</div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Hello English
+                </h1>
+                <p className="text-sm text-gray-600">Student Dashboard</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="font-semibold text-gray-800">Welcome back!</p>
+                <p className="text-sm text-purple-600">{profile?.display_name || 'Student'}</p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleSignOut}
+                className="flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </Button>
+            </div>
           </div>
-          <Button onClick={onLogout} variant="outline" className="bg-white">
-            Log Out
-          </Button>
         </div>
-        
-        <div className="bg-white rounded-xl shadow-xl p-6 mb-8">
-          <div className="flex border-b mb-6">
-            <button
-              onClick={() => setActiveTab('courses')}
-              className={`px-4 py-2 font-medium text-lg ${activeTab === 'courses' 
-                ? 'text-blue-600 border-b-2 border-blue-600' 
-                : 'text-gray-500'}`}
-            >
-              My Courses
-            </button>
-            <button
-              onClick={() => setActiveTab('progress')}
-              className={`px-4 py-2 font-medium text-lg ${activeTab === 'progress' 
-                ? 'text-blue-600 border-b-2 border-blue-600' 
-                : 'text-gray-500'}`}
-            >
-              My Progress
-            </button>
-            <button
-              onClick={() => setActiveTab('messages')}
-              className={`px-4 py-2 font-medium text-lg ${activeTab === 'messages' 
-                ? 'text-blue-600 border-b-2 border-blue-600' 
-                : 'text-gray-500'}`}
-            >
-              Messages
-            </button>
-          </div>
-          
-          {activeTab === 'courses' && (
-            <>
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="text-5xl animate-bounce mb-4">📚</div>
-                  <p className="text-gray-500">Loading your courses...</p>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <Card className="bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-2xl rounded-3xl">
+            <CardContent className="py-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-4xl font-bold mb-2">Welcome back, {profile?.display_name}! 🎉</h2>
+                  <p className="text-xl opacity-90">Ready to continue your English adventure?</p>
                 </div>
-              ) : purchasedCourses.length > 0 ? (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {purchasedCourses.map(course => (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      onView={handleCourseView}
-                      isPurchased={true}
-                    />
+                <div className="text-right">
+                  <div className="text-3xl mb-2">⭐</div>
+                  <p className="text-2xl font-bold">{weeklyStats.starsEarned}</p>
+                  <p className="text-sm opacity-75">Stars This Week</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white rounded-2xl p-1 shadow-lg">
+            <TabsTrigger value="courses" className="rounded-xl">📚 My Courses</TabsTrigger>
+            <TabsTrigger value="progress" className="rounded-xl">📈 Progress</TabsTrigger>
+            <TabsTrigger value="badges" className="rounded-xl">🏆 Badges</TabsTrigger>
+            <TabsTrigger value="messages" className="rounded-xl">💬 Messages</TabsTrigger>
+          </TabsList>
+
+          {/* My Courses Tab */}
+          <TabsContent value="courses" className="space-y-6">
+            <div className="grid gap-6">
+              {enrolledCourses.map((course) => (
+                <Card key={course.id} className="shadow-xl rounded-2xl overflow-hidden">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-6">
+                      <div className="text-6xl">{course.thumbnail}</div>
+                      
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="text-2xl font-bold text-gray-800">{course.title}</h3>
+                          <Badge variant="outline" className="text-purple-600 border-purple-600">
+                            {course.teacher}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-gray-600 mb-4">{course.nextLesson}</p>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm text-gray-500">
+                            <span>{course.completedLessons}/{course.totalLessons} lessons completed</span>
+                            <span>{course.progress}%</span>
+                          </div>
+                          <Progress value={course.progress} className="h-3" />
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className={`${course.progress === 100 ? 'bg-green-500 hover:bg-green-600' : 'bg-purple-500 hover:bg-purple-600'} text-white font-bold py-3 px-6 rounded-full`}
+                      >
+                        {course.progress === 100 ? (
+                          <>
+                            <Award className="w-4 h-4 mr-2" />
+                            Review
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-4 h-4 mr-2" />
+                            Continue
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              <Card className="shadow-xl rounded-2xl border-2 border-dashed border-purple-300 hover:border-purple-500 transition-colors cursor-pointer">
+                <CardContent className="p-8 text-center">
+                  <div className="text-6xl mb-4">➕</div>
+                  <h3 className="text-xl font-bold text-gray-700 mb-2">Explore More Courses!</h3>
+                  <p className="text-gray-500 mb-4">Discover amazing new lessons with Miss Gannah and Miss Suzan</p>
+                  <Button 
+                    onClick={() => navigate('/')}
+                    className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-2 px-6 rounded-full"
+                  >
+                    Browse Courses 🔍
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Progress Tab */}
+          <TabsContent value="progress" className="space-y-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="shadow-lg rounded-2xl">
+                <CardContent className="p-6 text-center">
+                  <BookOpen className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                  <p className="text-3xl font-bold text-gray-800">{weeklyStats.lessonsCompleted}</p>
+                  <p className="text-gray-600">Lessons This Week</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-lg rounded-2xl">
+                <CardContent className="p-6 text-center">
+                  <Clock className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                  <p className="text-3xl font-bold text-gray-800">{weeklyStats.timeSpent}</p>
+                  <p className="text-gray-600">Minutes Studied</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-lg rounded-2xl">
+                <CardContent className="p-6 text-center">
+                  <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                  <p className="text-3xl font-bold text-gray-800">{weeklyStats.starsEarned}</p>
+                  <p className="text-gray-600">Stars Earned</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-lg rounded-2xl">
+                <CardContent className="p-6 text-center">
+                  <TrendingUp className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                  <p className="text-3xl font-bold text-gray-800">{weeklyStats.currentStreak}</p>
+                  <p className="text-gray-600">Day Streak</p>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Card className="shadow-xl rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-800">Learning Progress Tree 🌳</CardTitle>
+                <CardDescription>Watch your English skills grow!</CardDescription>
+              </CardHeader>
+              <CardContent className="text-center py-12">
+                <div className="text-8xl mb-4">🌳</div>
+                <p className="text-xl text-gray-600">Your learning tree is growing strong!</p>
+                <p className="text-gray-500">Complete more lessons to see it flourish!</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Badges Tab */}
+          <TabsContent value="badges" className="space-y-6">
+            <Card className="shadow-xl rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-800">Your Amazing Badges! 🏆</CardTitle>
+                <CardDescription>Collect badges as you master English skills</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {recentBadges.map((badge, index) => (
+                    <Card key={index} className="shadow-lg rounded-xl text-center p-6">
+                      <div className="text-4xl mb-3">{badge.icon}</div>
+                      <h3 className="font-bold text-lg text-gray-800 mb-2">{badge.name}</h3>
+                      <p className="text-sm text-gray-500">Earned {badge.date}</p>
+                    </Card>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-5xl mb-4">🌱</div>
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">No Courses Yet</h3>
-                  <p className="text-gray-500 mb-6">
-                    Time to start your learning journey! Browse our courses and find one you like.
-                  </p>
-                  <Button className="bg-green-500 hover:bg-green-600">
-                    Explore Courses
-                  </Button>
+                
+                <div className="mt-8 text-center">
+                  <p className="text-gray-600 mb-4">Keep learning to unlock more badges!</p>
+                  <div className="flex justify-center space-x-4 opacity-50">
+                    <div className="text-3xl">🎯</div>
+                    <div className="text-3xl">📚</div>
+                    <div className="text-3xl">💬</div>
+                    <div className="text-3xl">🎤</div>
+                  </div>
                 </div>
-              )}
-            </>
-          )}
-          
-          {activeTab === 'progress' && (
-            <div className="text-center py-12">
-              <div className="text-5xl mb-4">📊</div>
-              <h3 className="text-xl font-bold text-gray-700 mb-2">Your Progress</h3>
-              <p className="text-gray-500">
-                Track your learning journey here. Complete more lessons to see your progress!
-              </p>
-            </div>
-          )}
-          
-          {activeTab === 'messages' && (
-            <div className="text-center py-12">
-              <div className="text-5xl mb-4">💌</div>
-              <h3 className="text-xl font-bold text-gray-700 mb-2">Messages</h3>
-              <p className="text-gray-500">
-                Connect with your teachers here. No messages yet!
-              </p>
-            </div>
-          )}
-        </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Messages Tab */}
+          <TabsContent value="messages" className="space-y-6">
+            <Card className="shadow-xl rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-800">Messages from Teachers 💌</CardTitle>
+                <CardDescription>Stay connected with Miss Gannah and Miss Suzan</CardDescription>
+              </CardHeader>
+              <CardContent className="text-center py-12">
+                <MessageCircle className="w-16 h-16 text-purple-500 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-700 mb-2">No new messages</h3>
+                <p className="text-gray-500 mb-6">Your teachers will send you encouragement and feedback here!</p>
+                <Button className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-full">
+                  Send Message to Teacher 📝
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
