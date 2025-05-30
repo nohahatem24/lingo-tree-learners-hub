@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -81,10 +80,10 @@ const Index = () => {
 
   if (user && profile) {
     if (profile.role === "student") {
-      return <StudentDashboard onLogout={handleLogout} />;
+      return <StudentDashboard />;
     }
     if (profile.role === "teacher") {
-      return <TeacherDashboard onLogout={handleLogout} />;
+      return <TeacherDashboard />;
     }
   }
 

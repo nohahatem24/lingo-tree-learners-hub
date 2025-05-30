@@ -16,6 +16,10 @@ export interface UserProfile {
   gender?: string | null;
   language?: string | null;
   phone?: string | null;
+  bio?: string | null;
+  specialization?: string | null;
+  total_stars?: number;
+  level?: number;
   created_at?: string | null;
   updated_at?: string | null;
 }
