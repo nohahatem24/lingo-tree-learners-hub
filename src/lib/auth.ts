@@ -62,29 +62,6 @@ export async function signUp(email: string, password: string, role: UserRole, di
     throw error;
   }
   
-  // Create profile record
-  if (data.user) {
-    console.log('Creating profile for user:', data.user.id);
-    try {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          email: email,
-          role: role,
-          display_name: displayName
-        });
-      
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-      } else {
-        console.log('Profile created successfully');
-      }
-    } catch (err) {
-      console.error('Profile creation failed:', err);
-    }
-  }
-  
   console.log('Sign up successful:', data.user?.id);
   return data;
 }
@@ -126,7 +103,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     
     console.log('Profile fetched successfully:', data);
     
-    // Safely map the data to our UserProfile interface
+    // Map the data to our UserProfile interface
     const userProfile: UserProfile = {
       id: userId,
       email: data.email || '',
