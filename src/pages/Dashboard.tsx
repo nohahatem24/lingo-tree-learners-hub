@@ -1,12 +1,17 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import StudentDashboard from '@/components/StudentDashboard';
 import TeacherDashboard from '@/components/TeacherDashboard';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('Dashboard mounted - user:', !!user, 'profile:', profile?.role, 'loading:', loading);
+  }, [user, profile, loading]);
 
   if (loading) {
     return (
@@ -20,8 +25,11 @@ const Dashboard = () => {
   }
 
   if (!user || !profile) {
+    console.log('No user or profile, redirecting to auth');
     return <Navigate to="/auth" replace />;
   }
+
+  console.log('Rendering dashboard for role:', profile.role);
 
   if (profile.role === 'teacher' || profile.role === 'admin') {
     return <TeacherDashboard />;
