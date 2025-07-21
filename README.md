@@ -1,4 +1,4 @@
-#🌳 Lingo Tree – Interactive English Learning Platform
+🌳 Lingo Tree – Interactive English Learning Platform
 Lingo Tree is a modern, interactive, and student-centered English learning platform designed to deliver engaging, personalized, and efficient educational content. Built around the unique teaching styles of Ms. Ganna and Ms. Suzanne, Lingo Tree offers a dual-instructor environment where students can learn, practice, and grow their English skills with direct guidance and communication.
 
 📚 Project Overview
