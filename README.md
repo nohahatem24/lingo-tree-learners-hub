@@ -1,73 +1,125 @@
-# Welcome to your Lovable project
+#🌳 Lingo Tree – Interactive English Learning Platform
+Lingo Tree is a modern, interactive, and student-centered English learning platform designed to deliver engaging, personalized, and efficient educational content. Built around the unique teaching styles of Ms. Ganna and Ms. Suzanne, Lingo Tree offers a dual-instructor environment where students can learn, practice, and grow their English skills with direct guidance and communication.
 
-## Project info
+📚 Project Overview
+Lingo Tree serves as an educational ecosystem that allows:
 
-**URL**: https://lovable.dev/projects/427fbeaa-0765-447a-b515-d9ee0f52dc39
+Students to access courses, videos, and quizzes.
 
-## How can I edit this code?
+Teachers to manage content, communicate with learners, and track performance.
 
-There are several ways of editing your application.
+Parents to follow up on student progress and engagement.
 
-**Use Lovable**
+👩‍🏫 Key Features
+👥 Dual Teacher Profiles
+Ms. Ganna and Ms. Suzanne each have personal teaching profiles.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/427fbeaa-0765-447a-b515-d9ee0f52dc39) and start prompting.
+Each teacher can:
 
-Changes made via Lovable will be committed automatically to this repo.
+Upload and manage video content.
 
-**Use your preferred IDE**
+Create structured courses/playlists (free or paid).
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Post assignments and interactive quizzes.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Monitor individual student progress.
 
-Follow these steps:
+Communicate directly with students and parents.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+🎓 Student Portal
+Each student has a personalized profile dashboard.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Students can:
 
-# Step 3: Install the necessary dependencies.
-npm i
+Enroll in full courses or individual lessons.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Submit assignments and take quizzes.
 
-**Edit a file directly in GitHub**
+Track their own learning progress.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Send private messages to their instructors.
 
-**Use GitHub Codespaces**
+View results and feedback in real-time.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🧠 Course Management
+Teachers can:
 
-## What technologies are used for this project?
+Add courses with structured modules and lessons.
 
-This project is built with:
+Define prerequisites and completion criteria.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Set course prices or offer free access.
 
-## How can I deploy this project?
+📝 Exam & Quiz System
+Teachers can create interactive exams.
 
-Simply open [Lovable](https://lovable.dev/projects/427fbeaa-0765-447a-b515-d9ee0f52dc39) and click on Share -> Publish.
+Auto-graded and manually reviewed question types.
 
-## Can I connect a custom domain to my Lovable project?
+Immediate feedback and results display.
 
-Yes, you can!
+💬 Real-time Messaging System
+Secure chat feature between:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Students ↔ Teachers
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Parents ↔ Teachers
+
+📊 Progress Tracking
+Teachers have full visibility into:
+
+Student grades.
+
+Assignment submissions.
+
+Quiz scores.
+
+Activity history.
+
+🔐 Security & Access Control
+Only registered students and verified teachers can access the learning dashboard.
+
+All student data and grades are securely stored and visible only to the relevant teacher.
+
+Teachers have exclusive access to admin and management panels.
+
+Role-based access ensures privacy and data integrity.
+
+🖼️ User Experience & Design
+Home Page: Includes a "Meet Our Teachers" section with dynamic links to teacher profiles.
+
+Courses Page: Lists available courses with filtering by teacher and category.
+
+Interactive Design: Fun, child-friendly UI focused on learning through play and practice.
+
+Fully Responsive: Works on mobile, tablet, and desktop devices.
+
+🚀 Getting Started
+1. Clone the repository
+bash
+Copy
+Edit
+git clone https://github.com/your-username/lingo-tree.git
+cd lingo-tree
+2. Install dependencies
+bash
+Copy
+Edit
+npm install
+3. Run the development server
+bash
+Copy
+Edit
+npm start
+🛠️ Tech Stack
+Frontend: HTML5, CSS3, JavaScript, React.js
+
+Backend: Node.js, Express.js
+
+Database: MongoDB / Firebase (specify which you used)
+
+Authentication: JWT / Firebase Auth
+
+Hosting: Netlify / Vercel / Firebase Hosting (choose one)
+
+Payments: Stripe / PayPal (if applicable)
+
